@@ -1,0 +1,23 @@
+{
+  "name": "icebase",
+  "version": "0.0.0",
+  "description": "Functional utilities for Firebase",
+  "main": "build/icebase.js",
+  "dependencies": {
+    "traceur": "^0.0.82"
+  },
+  "devDependencies": {
+    "traceur": "0.0.82",
+    "uglify-js": "^2.4.16"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "keywords": [
+    "firebase",
+    "functional",
+    "immmutable"
+  ],
+  "author": "Justin Tulloss",
+  "license": "MIT"
+}

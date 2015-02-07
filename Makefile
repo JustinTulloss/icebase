@@ -1,13 +1,17 @@
 UGLIFY=./node_modules/.bin/uglifyjs
-TRACEUR=./node_modules/.bin/traceur
-TRACEURFLAGS=--modules commonjs --generators true
+ES6C=./node_modules/.bin/6to5
+ES6CFLAGS=--modules umd
 
-dist/icebox.min.js: dist/icebox.js
+SRC=icebase.js
+
+dist/icebase.min.js: dist/icebase.js
 	$(UGLIFY) < $^ > $@
 
-dist/icebox.js: icebase.js
-	$(TRACEUR) $(TRACEURFLAGS) --out $@ $<
+dist/icebase.js: $(SRC)
+	$(ES6C) $(ES6CFLAGS) $< > $@
+
+watch: $(SRC)
+	$(ES6C) --watch $^ --out-file dist/icebase.js
 
 clean:
-	rm -rf build/*
-
+	rm -rf dist/*

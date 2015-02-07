@@ -4,10 +4,11 @@
   "description": "Functional utilities for Firebase",
   "main": "build/icebase.js",
   "dependencies": {
-    "traceur": "^0.0.82"
+    "firebase": "^2.1.2",
+    "transducers-js": "^0.4.135"
   },
   "devDependencies": {
-    "traceur": "0.0.82",
+    "6to5": "^3.4.1",
     "uglify-js": "^2.4.16"
   },
   "scripts": {

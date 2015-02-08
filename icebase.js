@@ -1,15 +1,69 @@
 // This library provides utilities to work with Firebase DataSnapshot objects
 // in a functional and immutable fashion.
 
-import {map, comp, identity} from 'transducers-js';
+import {map, compose, toArray} from 'transducers.js';
 
+// TODO: There really ought to be a way to do this with generators and iterables
+// that does not involve making an intermediate array.
 export function iter(dataSnapshot) {
-  return function() {
-    snap.forEach(function* (child) {
-      yield child;
-    });
+  var children = [];
+  var index = -1;
+  dataSnapshot.forEach(childSnap => children.push(childSnap));
+  return {
+    [Symbol.iterator]: function* () {
+      while (++index < children.length) {
+        yield children[index];
+      }
+    }
+  };
+}
+
+/*
+
+I need to put this away for a bit.
+
+What I'm trying to do is specify a function with a sequence of xforms as its
+arguments. It should evaluate those and then call the function with the resulting
+array.
+
+What would be awesome is if you could, given a piece of data, determine what
+function to call in one xform, then choose each of the arguments in separate
+xforms, and finally call it and return the reduced result.
+
+class Fxn {
+  constructor(fxn, context) {
+    this.fxn = fxn;
+    this.context = context;
+  }
+  init() {
+    this.args = [];
+  }
+  step(result, input) {
+    this.args.push(input.xform.
+  }
+  result() {
+    return this.fxn.apply(this.ctx, this.args);
   }
 }
+*/
+
+// XXX Don't belong in this lib
+export var apply = (...xforms) => {
+  debugger;
+  if (!xforms.length) {
+    throw new Error("You must provide at least one function to apply");
+  }
+  return function() {
+    for (var i = 0; i < xforms.length; i++) {
+      xforms[i] = xforms[i].apply(null, arguments);
+    }
+    if (typeof xforms[0] !== "function") {
+      throw new Error("The first transducer in the call to apply must result in a function");
+    }
+    return xforms[0].apply(null, Array.prototype.slice.call(xforms, 1));
+  }
+};
+export var identity = x => () => x
 
 // Convenience transducers.
 // These just allow you to extract parts of the snapshot
@@ -17,7 +71,21 @@ export function iter(dataSnapshot) {
 export var val = map(snap => snap.val());
 export var key = map(snap => snap.key());
 export var ref = map(snap => snap.ref());
-export var path = comp(map(ref => ref.toString(), ref));
+export var path = compose(map(ref => ref.toString()), ref);
+export var pluck = property => compose(val, get);
+export var get = (property, defVal=null) => map(val => val[property] || defVal);
+
+export var getIn = (path, defVal=null) => compose(val, map(val => {
+  var returnVal;
+  var prop;
+  while (prop = path.pop()) {
+    returnVal = val[prop];
+    if (returnVal === undefined) {
+      return defVal;
+    }
+  }
+  return returnVal;
+}));
 
 // This code is straight up ported from ReactFire
 // https://github.com/firebase/reactfire
@@ -80,7 +148,7 @@ export var ReactIceMixin = {
     this.firebaseListeners[bindVar] = firebaseRef.on("value", dataSnapshot => {
       var newState = {};
       if (bindAsArray) {
-        newState[bindVar] = this._toArray(dataSnapshot);
+        newState[bindVar] = toArray(iter(dataSnapshot));
       }
       else {
         newState[bindVar] = dataSnapshot;
@@ -125,9 +193,4 @@ export var ReactIceMixin = {
       throw error;
     }
   },
-
-  /* Converts a Firebase DataSnapshot to a JavaScript array of child snapshots */
-  _toArray(snap) {
-    return into([], identity, iter(snap));
-  }
 };

@@ -2,13 +2,16 @@
   "name": "icebase",
   "version": "0.0.0",
   "description": "Functional utilities for Firebase",
-  "main": "build/icebase.js",
+  "main": "dist/icebase.js",
   "dependencies": {
+    "6to5-runtime": "^3.4.1",
     "firebase": "^2.1.2",
-    "transducers-js": "^0.4.135"
+    "react": "^0.13.0-beta.1",
+    "transducers.js": "^0.2.3"
   },
   "devDependencies": {
     "6to5": "^3.4.1",
+    "6to5-runtime": "^3.4.1",
     "uglify-js": "^2.4.16"
   },
   "scripts": {

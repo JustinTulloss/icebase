@@ -1,0 +1,24 @@
+{
+  "name": "example",
+  "version": "0.0.0",
+  "description": "Showing off icebase",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^2.1.2",
+    "react": "0.13.0-beta.1",
+    "transducers.js": "^0.2.3"
+  },
+  "devDependencies": {
+    "6to5": "^3.4.1",
+    "6to5-core": "^3.4.1",
+    "6to5-loader": "^3.0.0",
+    "webpack": "^1.5.3",
+    "webpack-dev-server": "^1.7.0"
+  }
+}

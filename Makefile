@@ -16,5 +16,8 @@ dist/icebase.js: $(SRC)
 watch: $(SRC) | node_modules
 	$(ES6C) $(ES6CFLAGS) --watch $^ --out-file dist/icebase.js
 
+publish: dist/icebase.js
+	npm publish
+
 clean:
 	rm -rf dist/*

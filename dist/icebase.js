@@ -52,61 +52,6 @@
     })();
   }
 
-  /*
-  
-  I need to put this away for a bit.
-  
-  What I'm trying to do is specify a function with a sequence of xforms as its
-  arguments. It should evaluate those and then call the function with the resulting
-  array.
-  
-  What would be awesome is if you could, given a piece of data, determine what
-  function to call in one xform, then choose each of the arguments in separate
-  xforms, and finally call it and return the reduced result.
-  
-  class Fxn {
-    constructor(fxn, context) {
-      this.fxn = fxn;
-      this.context = context;
-    }
-    init() {
-      this.args = [];
-    }
-    step(result, input) {
-      this.args.push(input.xform.
-    }
-    result() {
-      return this.fxn.apply(this.ctx, this.args);
-    }
-  }
-  */
-
-  // XXX Don't belong in this lib
-  var apply = exports.apply = function () {
-    for (var _len = arguments.length, xforms = Array(_len), _key = 0; _key < _len; _key++) {
-      xforms[_key] = arguments[_key];
-    }
-
-    debugger;
-    if (!xforms.length) {
-      throw new Error("You must provide at least one function to apply");
-    }
-    return function () {
-      for (var i = 0; i < xforms.length; i++) {
-        xforms[i] = xforms[i].apply(null, arguments);
-      }
-      if (typeof xforms[0] !== "function") {
-        throw new Error("The first transducer in the call to apply must result in a function");
-      }
-      return xforms[0].apply(null, Array.prototype.slice.call(xforms, 1));
-    };
-  };
-  var identity = exports.identity = function (x) {
-    return function () {
-      return x;
-    };
-  };
-
   // Convenience transducers.
   // These just allow you to extract parts of the snapshot
   // within a transducer pipeline
@@ -253,3 +198,4 @@
     } };
   exports.__esModule = true;
 });
+
